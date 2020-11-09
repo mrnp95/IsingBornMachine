@@ -48,9 +48,9 @@ def CostPlot(N_qubits, kernel_type, data_train_test, N_samples,\
     plt.xlabel("Epochs")
     plt.ylabel("Loss")
     plt.title("Loss for %i qubits" % N_qubits)
+    # plt.savefig("plot.png")
 
-
-    # plt.show(block=False)
-    # plt.pause(1)
-    # plt.close()
+    plt.show(block=False)
+    plt.pause(10)
+    plt.close()
     return loss, circuit_params, born_probs_list, empirical_probs_list

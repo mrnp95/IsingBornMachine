@@ -1,0 +1,16 @@
+20
+0.0001
+Bernoulli_Data
+2000
+2000
+2000
+500
+Gaussian
+MMD
+2q-qvm
+1
+Exact
+4
+0.01
+0.2
+2

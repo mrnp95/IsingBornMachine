@@ -102,8 +102,9 @@ def SaveAnimation(framespersec, fig, N_epochs, N_qubits, N_born_samples, cost_fu
         plt.close()
 def PlotAnimate(N_qubits, N_epochs, N_born_samples, cost_func, kernel_type, data_exact_dict):
    
-        plt.legend(prop={'size': 7}, loc='best').draggable()
-        
+        # plt.legend(prop={'size': 7}, loc='best').draggable()
+        plt.legend(prop={'size': 7}, loc='best')
+
         plots_path = './plots/'
         MakeDirectory(plots_path)
         plt.savefig("plots/%s_%iQbs_%s_%iBSamps_%iEpoch.pdf" \
@@ -230,9 +231,9 @@ def main():
 
         t1 = time.time()
         print('Execution Time is:', t1-t0)                                              
-        # plt.figure(1)    
+        plt.figure(1)
 
-        # CostPlot(N_qubits, kernel_type, data_train_test, N_samples, cost_func, loss, circuit_params, born_probs_list, empirical_probs_list)
+        CostPlot(N_qubits, kernel_type, data_train_test, N_samples, cost_func, loss, circuit_params, born_probs_list, empirical_probs_list)
         
 
         # fig, axs = PlotAnimate(N_qubits, N_epochs, N_born_samples, cost_func, kernel_type, data_exact_dict)

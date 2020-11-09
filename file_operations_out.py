@@ -35,12 +35,11 @@ def MakeDirectory(path):
 
 def PrintParamsToFile(seed, max_qubits):
 
-    for qubit_index in range(2, max_qubits):
+	for qubit_index in range(2, max_qubits):
 
-        J_init, b_init, gamma_init, delta_init = NetworkParams(qubit_index, seed)
-        np.savez('data/Parameters_%iQubits.npz' % (qubit_index), J_init = J_init, b_init = b_init, gamma_init = gamma_init, delta_init = delta_init)
-
-        return
+		J_init, b_init, gamma_init, delta_init = NetworkParams(qubit_index, seed)
+		np.savez('data/Parameters_%iQubits.npz' % (qubit_index), J_init = J_init, b_init = b_init, gamma_init = gamma_init, delta_init = delta_init)
+	return
 
 #PrintParamsToFile(seed, max_qubits)
 
@@ -129,13 +128,13 @@ def PrintCircuitParamsToFile(random_seed, circuit_choice):
 
 def string_to_int_byte(string, N_qubits, byte):
 
-    total = 0
-    for qubit in range(8 * byte, min(8 * (byte + 1), N_qubits)):
-        total <<= 1
-        total += int(string[qubit])
+	total = 0
+	for qubit in range(8 * byte, min(8 * (byte + 1), N_qubits)):
+		total <<= 1
+		total += int(string[qubit])
+	return total
 
-    return total
-    
+
 def PrintDataToFiles(data_type, N_samples, qc, circuit_choice, N_qubits):
 
 	binary_data_path = 'binary_data/'
