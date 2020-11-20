@@ -186,16 +186,22 @@ def main():
         elif data_type == 'Bernoulli_Data':
             
             try:
-                with open('binary_data/Bernoulli_Data_%iQBs_%iSamples' % (N_qubits, N_data_samples), 'rb') as f:
-                    data_samples_orig = read_ints_from_file(N_qubits, N_data_samples, f)
-
+                # with open('binary_data/Bernoulli_Data_%iQBs_%iSamples' % (N_qubits, N_data_samples), 'rb') as f:
+                #     data_samples_orig = read_ints_from_file(N_qubits, N_data_samples, f)
+                f = open('binary_data/weibull_dat.txt', "r")
+                data_samples_orig = []
+                for i in f.read():
+                    if i != '\n':
+                        data_samples_orig.append(int(i))
+                print("rightttttttttt: ", data_samples_orig)
             except:
+                print("tjoossssssssssssssssssssssssssssss")
                 PrintDataToFiles(data_type, N_data_samples, qc, data_circuit_choice, N_qubits)
                 with open('binary_data/Bernoulli_Data_%iQBs_%iSamples' % (N_qubits, N_data_samples), 'rb') as f:
                     data_samples_orig = read_ints_from_file(N_qubits, N_data_samples, f)
 
             print("read data =")
-            data_samples_orig
+            print(data_samples_orig)
             data_samples = np.zeros((N_data_samples, N_qubits), dtype = int)
 
             for sample in range(0, N_data_samples):
@@ -207,8 +213,37 @@ def main():
                     data_samples[sample, N_qubits - 1 - outcome] = temp % 2
                     temp >>= 1
 
+        elif data_type == 'Weibull_Data':
+
+            try:
+                # with open('binary_data/Bernoulli_Data_%iQBs_%iSamples' % (N_qubits, N_data_samples), 'rb') as f:
+                #     data_samples_orig = read_ints_from_file(N_qubits, N_data_samples, f)
+                f = open('binary_data/weibull_dat_int.txt', "r")
+                data_samples_orig = []
+                for i in f.read():
+                    if i != '\n':
+                        data_samples_orig.append(int(i))
+                print("Weibull trainset: ", data_samples_orig)
+            except:
+                print("reading trainset failed!!!!")
+                # PrintDataToFiles(data_type, N_data_samples, qc, data_circuit_choice, N_qubits)
+                # with open('binary_data/Bernoulli_Data_%iQBs_%iSamples' % (N_qubits, N_data_samples), 'rb') as f:
+                #     data_samples_orig = read_ints_from_file(N_qubits, N_data_samples, f)
+
+            print("read data =")
+            print(data_samples_orig)
+            data_samples = np.zeros((N_data_samples, N_qubits), dtype=int)
+
+            for sample in range(0, N_data_samples):
+
+                temp = data_samples_orig[sample]
+
+                for outcome in range(0, N_qubits):
+                    data_samples[sample, N_qubits - 1 - outcome] = temp % 2
+                    temp >>= 1
+
         else:
-            sys.exit("[ERROR] : data_type should be either 'Quantum_Data' or 'Bernoulli_Data'")
+            sys.exit("[ERROR] : data_type should be either 'Quantum_Data' or 'Bernoulli_Data' or 'Weibull_Data'")
     
         np.random.shuffle(data_samples)
 
@@ -220,7 +255,7 @@ def main():
         #Parameters, J, b for epoch 0 at random, gamma = constant = pi/4
         #Set random seed to 0 to initialise the actual Born machine to be trained
         initial_params = NetworkParams(qc, random_seed)
-
+        print(initial_params)
         data_exact_dict = DataDictFromFile(data_type, N_qubits, 'infinite', data_circuit_choice)
         t0 = time.time()
         loss, circuit_params, born_probs_list, empirical_probs_list = TrainBorn(qc, cost_func, initial_params, \
@@ -236,8 +271,8 @@ def main():
         CostPlot(N_qubits, kernel_type, data_train_test, N_samples, cost_func, loss, circuit_params, born_probs_list, empirical_probs_list)
         
 
-        # fig, axs = PlotAnimate(N_qubits, N_epochs, N_born_samples, cost_func, kernel_type, data_exact_dict)
-        # SaveAnimation(5, fig, N_epochs, N_qubits,  N_born_samples, cost_func, kernel_type, data_exact_dict, born_probs_list, axs, N_data_samples)
+        fig, axs = PlotAnimate(N_qubits, N_epochs, N_born_samples, cost_func, kernel_type, data_exact_dict)
+        SaveAnimation(5, fig, N_epochs, N_qubits,  N_born_samples, cost_func, kernel_type, data_exact_dict, born_probs_list, axs, N_data_samples)
         
 
         PrintFinalParamsToFile(cost_func, data_type, data_circuit_choice, N_epochs, \

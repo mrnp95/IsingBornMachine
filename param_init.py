@@ -38,7 +38,7 @@ def NetworkParams(qc, random_seed):
 	#is generated, or whether the actual Born machine is being used.
 	rand.seed(random_seed)
 	for j in range(0, N_qubits):
-		b[j] = rand.uniform(0, pi/4)
+		b[j] = rand.uniform(-pi, pi)
 		# If delta to be trained also and variable for each qubit
 		# rand.seed(j+N)
 		# gamma[j] = rand.uniform(0,pi/4)

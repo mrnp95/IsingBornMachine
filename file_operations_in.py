@@ -48,6 +48,16 @@ def DataDictFromFile(data_type, N_qubits, N_data_samples, *args):
 				raw_from_file = json.load(g)
 				data_dict = json.loads(raw_from_file)
 
+	elif data_type == 'Weibull_Data':
+		if (N_data_samples == 'infinite'):
+			with open('data/Weibull_Data_Dict_%iQBs_Exact' % (N_qubits), 'r') as f:
+				raw_from_file = json.load(f)
+				data_dict = json.loads(raw_from_file)
+		else:
+			with open('data/Weibull_Data_Dict_%iQBs_%iSamples' % (N_qubits, N_data_samples[0]), 'r') as g:
+				raw_from_file = json.load(g)
+				data_dict = json.loads(raw_from_file)
+
 	elif data_type == 'Quantum_Data':
 		circuit_choice = args[0]
 	

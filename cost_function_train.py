@@ -43,6 +43,10 @@ def TrainBorn(qc, cost_func,initial_params,
     [m_bias, v_bias] = [np.zeros((N_qubits)) for _ in range(2)] 
     [m_weights, v_weights] = [np.zeros((N_qubits, N_qubits)) for _ in range(2)] 
 
+    lr_list_b = []
+    lr_list_w_0 = []
+    lr_list_w_1 = []
+
     for epoch in range(0, N_epochs-1):
 
         #gamma/delta is not to be trained, set gamma values to be constant at each epoch
@@ -133,13 +137,21 @@ def TrainBorn(qc, cost_func,initial_params,
         learning_rate_bias, m_bias, v_bias          = AdamLR(learning_rate_init, epoch, bias_grad, m_bias, v_bias)
         learning_rate_weights, m_weights, v_weights = AdamLR(learning_rate_init, epoch, weight_grad + np.transpose(weight_grad), m_weights, v_weights)
 
+
+        lr_list_b.append(learning_rate_bias)
+        lr_list_w_0.append(learning_rate_weights[0, :])
+        lr_list_w_1.append(learning_rate_weights[1, :])
+
         # circuit_params[('b', epoch+1)] = circuit_params[('b', epoch)] - learning_rate_bias*bias_grad
         # circuit_params[('J', epoch+1)] = circuit_params[('J', epoch)] - learning_rate_weights*(weight_grad + np.transpose(weight_grad))
         
         circuit_params[('b', epoch+1)] = circuit_params[('b', epoch)] - learning_rate_bias
         circuit_params[('J', epoch+1)] = circuit_params[('J', epoch)] - learning_rate_weights
 
-    
+    np.savetxt("lr_eff_bias.txt", lr_list_b)
+    np.savetxt("lr_eff_weights_0.txt", lr_list_w_0)
+    np.savetxt("lr_eff_weights_1.txt", lr_list_w_1)
+
     return loss, circuit_params, born_probs_list, empirical_probs_list
 
 

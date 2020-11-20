@@ -1,0 +1,1 @@
+The data is:cost function:MMD chip:2q-qvm kernel:Gaussian N kernel samples:2000 N Born Samples:2000 N Data samples:2000						Batch size:500 Epochs:1000 Adam Learning Rate:0.001, Data Form: Exact  Run: 2

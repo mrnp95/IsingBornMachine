@@ -102,6 +102,15 @@ def DataDictToFile(data_type, N_qubits, data_dict, N_data_samples, *args):
 		else:
 			with open('data/Bernoulli_Data_Dict_%iQBs_%iSamples' % (N_qubits, N_data_samples), 'w') as f:
 				json.dump(json.dumps(data_dict, sort_keys=True),f)
+
+	elif data_type.lower() == 'weibull_data':
+		if (N_data_samples == 'infinite'):
+			with open('data/Weibull_Data_Dict_%iQBs_Exact' % N_qubits, 'w') as f:
+				json.dump(json.dumps(data_dict, sort_keys=True),f)
+		else:
+			with open('data/Weibull_Data_Dict_%iQBs_%iSamples' % (N_qubits, N_data_samples), 'w') as f:
+				json.dump(json.dumps(data_dict, sort_keys=True),f)
+
 	elif data_type.lower() == 'quantum_data':
 		circuit_choice = args[0]
 		if (N_data_samples == 'infinite'):
@@ -414,8 +423,109 @@ def MakeTrialNameFile(cost_func,data_type, data_circuit, N_epochs,learning_rate,
 				sinkhorn_eps,\
 				str(run)))
 
+	elif data_type == 'Weibull_Data':
+		if cost_func == 'MMD':
+			score = stein_params[0]
+			trial_name = "outputs/Output_MMD_%s_%skernel_%ikernel_samples_%iBorn_Samples%iData_samples_%iBatch_size_%iEpochs_%.3fLR_%s_Run%s" \
+						 % (qc, \
+							kernel_type, \
+							N_kernel_samples, \
+							N_born_samples, \
+							N_data_samples, \
+							batch_size, \
+							N_epochs, \
+							learning_rate, \
+							score, \
+							str(run))
 
-	else: raise ValueError('\'data_type\' must be either \'Quantum_Data\' or  \'Bernoulli_Data\'')
+			path_to_output = './%s/' % trial_name
+			MakeDirectory(path_to_output)
+
+			with open('%s/info' % trial_name, 'w') as f:
+				sys.stdout = f
+				print("The data is:cost function:MMD chip:%s kernel:%s N kernel samples:%i N Born Samples:%i N Data samples:%s\
+						Batch size:%i Epochs:%i Adam Learning Rate:%.3f, Data Form: %s  Run: %s"
+					  % (qc, \
+						 kernel_type, \
+						 N_kernel_samples, \
+						 N_born_samples, \
+						 N_data_samples, \
+						 batch_size, \
+						 N_epochs, \
+						 learning_rate, \
+						 score, \
+						 str(run)))
+
+		elif cost_func == 'Stein':
+			score = stein_params[0]
+			stein_eigvecs = stein_params[1]
+			stein_eta = stein_params[2]
+
+			trial_name = "outputs/Output_Stein_%s_%skernel_%ikernel_samples_%iBorn_Samples%iData_samples_%iBatch_size_%iEpochs_%.3fLR_%s_%iEigvecs_%.3fEta_Run%s" \
+						 % (qc, \
+							kernel_type, \
+							N_kernel_samples, \
+							N_born_samples, \
+							N_data_samples, \
+							batch_size, \
+							N_epochs, \
+							learning_rate, \
+							score, \
+							stein_eigvecs,
+							stein_eta, \
+							str(run))
+			path_to_output = './%s/' % trial_name
+			MakeDirectory(path_to_output)
+
+			with open('%s/info' % trial_name, 'w') as f:
+				sys.stdout = f
+				print("The data is: cost function: Stein, chip:%s  kernel:%s N kernel samples:%i \n N Born Samples:%i N Data samples:%i\
+				Batch size:%iEpochs:%iAdam Learning Rate:%.3fStein Score:%sN Nystrom Eigvecs:%iStein Eta:%.3f Run: %s"
+
+					  % (qc, \
+						 kernel_type, \
+						 N_kernel_samples, \
+						 N_born_samples, \
+						 N_data_samples, \
+						 batch_size, \
+						 N_epochs, \
+						 learning_rate, \
+						 score, \
+						 stein_eigvecs, \
+						 stein_eta, \
+						 str(run)))
+
+		elif cost_func == 'Sinkhorn':
+			trial_name = "outputs/Output_Sinkhorn_%s_HammingCost_%iBorn_Samples%iData_samples_%iBatch_size_%iEpochs_%.3fLR_%.3fEpsilon_Run%s" \
+						 % (qc, \
+							N_born_samples, \
+							N_data_samples, \
+							batch_size, \
+							N_epochs, \
+							learning_rate, \
+							sinkhorn_eps, \
+							str(run))
+
+			path_to_output = './%s/' % trial_name
+			MakeDirectory(path_to_output)
+
+			with open('%s/info' % trial_name, 'w') as f:
+				sys.stdout = f
+				print("The data is: cost function: Sinkhorn chip: %s kernel: %sN kernel samples: %i N Born Samples: %iN Data samples: %i Batch size: %i  \n \
+				Epochs: %i Adam Learning Rate:  %.3f Sinkhorn Epsilon:  %.3f Run: %s"
+
+					  % (qc, \
+						 kernel_type, \
+						 N_kernel_samples, \
+						 N_born_samples, \
+						 N_data_samples, \
+						 batch_size, \
+						 N_epochs, \
+						 learning_rate, \
+						 sinkhorn_eps, \
+						 str(run)))
+
+	else: raise ValueError('\'data_type\' must be either \'Quantum_Data\' or  \'Bernoulli_Data\' or \'Weibull_Data\'')
 	return trial_name
 
 def PrintFinalParamsToFile(cost_func, data_type, data_circuit, N_epochs, learning_rate, loss,

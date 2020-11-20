@@ -9,6 +9,13 @@ def CostPlot(N_qubits, kernel_type, data_train_test, N_samples,\
             
     plot_colour = ['r', 'b']
 
+    plt.rc("text", usetex=False)
+    # plt.rc('font', family='serif')
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.title("Loss for %i qubits" % N_qubits)
+
+
     if kernel_type == 'Quantum':
         if (cost_func == 'MMD'):
             plt.plot(loss[('MMD', 'Train')],  '%so-' %(plot_colour[0]), label ='MMD, %i Training Points,  %i Born Samples for a %s kernel with %i Measurements.' \
@@ -25,9 +32,9 @@ def CostPlot(N_qubits, kernel_type, data_train_test, N_samples,\
                                     %(N_samples[0], N_samples[1], kernel_type[0],  N_samples[-1]))
     else:
         if (cost_func == 'MMD'):
-            plt.plot(loss[('MMD', 'Train')],  '%so-' %(plot_colour[0]), label ='MMD, %i Training Points,  %i Born Samples for a %s kernel.' \
+            plt.plot(loss[('MMD', 'Train')],  "%so-" %(plot_colour[0]), label ="MMD, %i Training Points,  %i Born Samples for a %s kernel." \
                                         %(len(data_train_test[0]), N_samples[1], kernel_type[0]))
-            plt.plot(loss[('MMD', 'Test')],  '%sx-' %(plot_colour[0]), label ='MMD, %i Test Points,  %i Born Samples for a %s kernel.' \
+            plt.plot(loss[('MMD', 'Test')],  "%sx-" %(plot_colour[0]), label ="MMD, %i Test Points,  %i Born Samples for a %s kernel." \
                                         %(len(data_train_test[1]), N_samples[1], kernel_type[0]))
         elif (cost_func == 'Stein'):
             plt.plot(loss[('Stein', 'Train')],'%so-' %(plot_colour[1]) , label ='Stein, %i Training Points,  %i Born Samples for a %s kernel.' \
@@ -42,15 +49,11 @@ def CostPlot(N_qubits, kernel_type, data_train_test, N_samples,\
         elif (cost_func == 'TV'):
             plt.plot(loss['TV'], '%so-' %(plot_colour[1]), label ='TV, %i Data Samples,  %i Born Samples for a %s kernel.' \
                                     %(N_samples[0], N_samples[1], kernel_type[0]))
-    
-    # plt.rc('text', usetex=True)
-    # plt.rc('font', family='serif')
-    plt.xlabel("Epochs")
-    plt.ylabel("Loss")
-    plt.title("Loss for %i qubits" % N_qubits)
-    # plt.savefig("plot.png")
+
+
 
     plt.show(block=False)
-    plt.pause(10)
+    plt.pause(15)
+    plt.savefig("outputs/plot.png")
     plt.close()
     return loss, circuit_params, born_probs_list, empirical_probs_list
